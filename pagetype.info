@@ -1,0 +1,4 @@
+name        = Page Type
+description = Re-usable Page Entity Type
+core        = 7.x
+package     = Entity

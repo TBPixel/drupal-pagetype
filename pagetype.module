@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Composer PSR-4 Autoloader
+ */
+require_once 'vendor/autoload.php';
+
+/**
+ * Form structure and validation
+ */
+require_once 'forms/forms.php';
+
+/**
+ * Permissions
+ */
+require_once 'components/permissions.php';
+
+/**
+ * Entity Info
+ */
+require_once 'components/entity.php';
+
+/**
+ * Theme definitions
+ */
+require_once 'components/theme.php';
+
+/**
+ * Routes and menu items
+ */
+require_once 'components/routes.php';
+
+/**
+ * Page type definitions
+ */
+require_once 'components/types.php';

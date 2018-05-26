@@ -1,0 +1,160 @@
+<?php
+
+
+/**
+ * hook_schema()
+ */
+function pagetype_schema() : array
+{
+    $schema['pages'] = [
+
+        'description' => 'Base table for the page entity.',
+
+        'primary key' => ['id'],
+
+        'indexes'     => [
+            'page_created' => ['created']
+        ],
+
+        'fields' => [
+
+            'id' => [
+                'description'   => 'Primary key for page entity.',
+                'type'          => 'serial',
+                'unsigned'      => true,
+                'not null'      => true
+            ],
+
+            'type' => [
+                'description'   => 'Bundle of the page entity.',
+                'type'          => 'varchar',
+                'length'        => 32,
+                'not null'      => true
+            ],
+
+            'title' => [
+                'description'   => 'Page title.',
+                'type'          => 'varchar',
+                'length'        => 255,
+                'not null'      => true,
+                'default'       => ''
+            ],
+
+            'created' => [
+                'description'   => 'Page created at date.',
+                'type'          => 'int',
+                'length'        => 11,
+                'not null'      => true
+            ],
+
+            'status' => [
+                'description'   => 'Page visibility status.',
+                'type'          => 'varchar',
+                'length'        => 32,
+                'not null'      => true,
+                'default'       => 'unpublished'
+            ]
+        ]
+    ];
+
+    $schema['page_types'] = [
+
+        'description' => 'Base table for page entity types.',
+
+        'primary key' => ['machine_name'],
+
+        'fields' => [
+
+            'machine_name' => [
+                'description'   => 'Unique machine-readable name of the page type.',
+                'type'          => 'varchar',
+                'length'        => 32,
+                'not null'      => true
+            ],
+
+            'name' => [
+                'description'   => 'Human-readable name of the page type.',
+                'type'          => 'varchar',
+                'length'        => 255,
+                'not null'      => true,
+                'default'       => ''
+            ],
+
+            'plural' => [
+                'description'   => 'Human-readable plural name of the page type.',
+                'type'          => 'varchar',
+                'length'        => 255,
+                'not null'      => true,
+                'default'       => ''
+            ],
+
+            'description' => [
+                'description'   => 'Brief description of the page type.',
+                'type'          => 'text',
+                'size'          => 'medium',
+                'not null'      => false
+            ],
+
+            'has_continuity' => [
+                'description'   => 'Page type continuity.',
+                'type'          => 'int',
+                'size'          => 'tiny',
+                'unsigned'      => true,
+                'not null'      => true,
+                'default'       => 0
+            ],
+        ]
+    ];
+
+
+    return $schema;
+}
+
+
+/**
+ * hook_install()
+ */
+function pagetype_install() : void
+{
+    field_create_field([
+        'field_name'    => 'page_body',
+        'type'          => 'text_with_summary',
+        'module'        => 'text',
+        'cardinality'   => 1,
+        'entity_types'  => ['page'],
+        'translatable'  => TRUE
+    ]);
+
+    field_create_instance(
+        pagetype_get_body_instance('basic')
+    );
+}
+
+
+/**
+ * hook_uninstall()
+ */
+function pagetype_uninstall() : void
+{
+    field_delete_instance(
+        pagetype_get_body_instance('basic')
+    );
+}
+
+
+
+/**
+ * Returns the body instance for a given pagetype
+ */
+function pagetype_get_body_instance(string $type) : array
+{
+    return [
+        'field_name'    => 'page_body',
+            'entity_type'   => 'page',
+            'bundle'        => $type,
+            'label'         => 'Body',
+            'widget' => [
+                'type' => 'text_textarea_with_summary'
+            ]
+    ];
+}
