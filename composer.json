@@ -1,0 +1,17 @@
+{
+    "name": "tbpixel/pagetype",
+    "description": "Drupal 7 PageType module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tony Barry",
+            "email": "tonympbarry@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TBPixel\\PageType\\": "src/"
+        }
+    },
+    "require": {}
+}
