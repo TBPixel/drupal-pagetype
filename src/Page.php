@@ -3,7 +3,7 @@
 namespace TBPixel\PageType;
 
 use TBPixel\PageType\Model;
-use Throwable;
+use Exception;
 use EntityFieldQuery;
 use DateTimeInterface;
 use DateTime;
@@ -149,7 +149,7 @@ class Page extends Model
 
             db_ignore_slave();
         }
-        catch (Throwable $exception)
+        catch (Exception $exception)
         {
             $transaction->rollback();
 
