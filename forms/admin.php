@@ -77,15 +77,17 @@ function pagetype_admin_pages_pages(?string $filter) : array
 
     foreach ($pages as $page)
     {
+        $uri = entity_uri('page', $page);
+
         $operations['edit'] = [
             'title' => t('edit'),
-            'href'  => "pages/{$page->id}/edit",
+            'href'  => $uri['path'] . '/edit',
             'query' => $destination
         ];
 
         $operations['delete'] = [
             'title' => t('delete'),
-            'href'  => "pages/{$page->id}/delete",
+            'href'  => $uri['path'] . '/delete',
             'query' => $destination
         ];
 

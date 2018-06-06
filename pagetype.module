@@ -34,3 +34,18 @@ require_once 'components/routes.php';
  * Page type definitions
  */
 require_once 'components/types.php';
+
+/**
+ * Token definitions and info
+ */
+require_once 'components/tokens.php';
+
+/**
+ * Path hooks and alteration callbacks
+ */
+require_once 'components/path.php';
+
+/**
+ * Pathauto optional hook implementation
+ */
+require_once 'components/pathauto.php';

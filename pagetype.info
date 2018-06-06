@@ -1,7 +1,8 @@
-name        = Page Type
-description = Re-usable Page Entity Type
-core        = 7.x
-package     = Entity
+name            = Page Type
+description     = Re-usable Page Entity Type
+core            = 7.x
+package         = Entity
 
+dependencies[]  = token
 dependencies[]  = path
 recommends[]    = pathauto

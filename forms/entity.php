@@ -20,10 +20,7 @@ function page_new_form(string $type) : array
  */
 function page_form(array $form, array &$state, Page $page) : array
 {
-    $form['page'] = [
-        '#type'  => 'value',
-        '#value' => $page
-    ];
+    $state['page'] = $page;
 
     $form['title'] = [
         '#title'         => t('Title'),
@@ -66,7 +63,7 @@ function page_form_submit(array $form, array &$state) : void
 {
     $values = $state['values'];
     /** @var Page $page */
-    $page   = $values['page'];
+    $page   = $state['page'];
     $fields = array_keys(
         field_info_instances('page', $page->type)
     );
@@ -88,6 +85,16 @@ function page_form_submit(array $form, array &$state) : void
     );
 
     $state['redirect'] = 'admin/pages';
+}
+
+
+/**
+ * hook_form_FORM_ID_alter()
+ */
+function pagetype_form_page_form_alter(array &$form, array &$state) : void
+{
+    pagetype_path_attach_field($form, $state);
+    pagetype_pathauto_attach_field($form, $state);
 }
 
 

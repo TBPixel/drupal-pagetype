@@ -16,7 +16,7 @@ function pagetype_entity_info() : array
         'base table'        => 'pages',
         'module'            => 'pagetype',
         'access callback'   => 'pagetype_access',
-        'uri callback'      => 'entity_class_uri',
+        'uri callback'      => 'pagetype_uri',
         'fieldable'         => true,
         'entity keys' => [
             'id'     => 'id',
@@ -58,6 +58,58 @@ function pagetype_entity_info() : array
     return $types;
 }
 
+
+/**
+ * hook_page_insert()
+ */
+function pagetype_page_insert(Page $page)
+{
+    pagetype_page_path_insert($page);
+
+    if (module_exists('pathauto')) pagetype_page_update_alias($page, 'insert');
+}
+
+
+/**
+ * hook_page_update()
+ */
+function pagetype_page_update(Page $page)
+{
+    pagetype_page_path_update($page);
+
+    if (module_exists('pathauto')) pagetype_page_update_alias($page, 'update');
+}
+
+
+/**
+ * hook_page_delete()
+ */
+function pagetype_page_delete(Page $page)
+{
+    pagetype_page_path_delete($page);
+
+    if (module_exists('pathauto'))
+    {
+        $uri = entity_uri('page', $page);
+
+        pathauto_entity_path_delete_all(
+            'page',
+            $page,
+            $uri['path']
+        );
+    }
+}
+
+
+/**
+ * Generates the page entity machine uri
+ */
+function pagetype_uri(Page $page) : array
+{
+    return [
+        'path' => "pages/{$page->id}"
+    ];
+}
 
 
 /**

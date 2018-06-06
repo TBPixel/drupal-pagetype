@@ -38,6 +38,11 @@ class Page extends Model
      */
     protected $status;
 
+    /**
+     * @var string
+     */
+    protected $language;
+
 
 
     public function __construct(string $type)
@@ -45,6 +50,7 @@ class Page extends Model
         $this->setType($type);
         $this->setCreated(new DateTime);
         $this->setStatus('unpublished');
+        $this->language = ($langcode = entity_language('page', $this)) ? $langcode : LANGUAGE_NONE;
     }
 
 
@@ -139,10 +145,8 @@ class Page extends Model
                 field_attach_update('page', $this);
             }
 
-
             module_invoke_all("page_{$operation}", $this);
             module_invoke_all("entity_{$operation}", $this, 'page');
-
 
             entity_get_controller('page')->resetCache([$this->id]);
 
@@ -155,6 +159,36 @@ class Page extends Model
 
             watchdog_exception('pagetype', $exception);
 
+
+            throw $exception;
+        }
+
+
+        return $this;
+    }
+
+
+    public function delete() : Page
+    {
+        if (!$this->id) return $this;
+
+        $transaction = db_transaction();
+
+        try
+        {
+            module_invoke_all('page_delete', $this);
+            module_invoke_all('entity_delete', $this, 'page');
+            field_attach_delete('page', $this);
+
+            db_delete('page')
+                ->condition('id', $this->id)
+                ->execute();
+        }
+        catch (Exception $exception)
+        {
+            $transaction->rollback();
+
+            watchdog_exception('pagetype', $exception);
 
             throw $exception;
         }
