@@ -15,6 +15,13 @@ function pagetype_theme() : array
         ]
     ];
 
+    $themes['pagetype'] = [
+        'variables' => [
+            'element' => null
+        ],
+        'template'  => 'templates/pagetype'
+    ];
+
 
     return $themes;
 }
@@ -39,13 +46,11 @@ function theme_pagetype_admin_types(array $variables) : string
 
 
 /**
- * hook_preprocess_html()
+ * Preprocessor for pagetype
  */
-function pagetype_preprocess_html(array &$vars) : void
+function pagetype_preprocess_pagetype(array &$vars) : void
 {
-    if (!(strpos($path = current_path(), 'pages/') === 0)) return;
-
-    $id   = explode('/', $path);
+    $id   = explode('/', current_path());
     $id   = end($id);
 
     if (!is_numeric($id) || is_null($page = Page::findOne($id))) return;

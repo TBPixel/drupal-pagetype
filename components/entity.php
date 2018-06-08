@@ -115,14 +115,27 @@ function pagetype_uri(Page $page) : array
 /**
  * Generates a page view
  */
-function pagetype_page_view(int $id) : string
+function pagetype_page_view(int $id, $view_mode = 'full') : array
 {
     $page = Page::findOne($id);
 
+    $page->content  = [];
+
     drupal_set_title($page->title);
+    field_attach_prepare_view(Page::ENTITY_NAME, [$page->id => $page], $view_mode);
+    entity_prepare_view(Page::ENTITY_NAME, [$page->id => $page]);
+
+    $page->content += field_attach_view(Page::ENTITY_NAME, $page, $view_mode);
+
+    $page->content += [
+        '#theme'     => Page::ENTITY_NAME,
+        '#element'   => $page,
+        '#view_mode' => $view_mode,
+        '#language'  => $page->language,
+    ];
 
 
-    return '';
+    return $page->content;
 }
 
 

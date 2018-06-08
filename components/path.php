@@ -98,7 +98,7 @@ function pagetype_page_path_update(Page $page) : void
 {
     if (!isset($page->path)) return;
 
-    $page->path['alias'] = isset($page->path['alias']) ? trim($path['alias']) : '';
+    $page->path['alias'] = isset($page->path['alias']) ? trim($page->path['alias']) : '';
 
     if (!empty($page->path['pid']) && empty($page->path['alias'])) path_delete($page->path['pid']);
 
