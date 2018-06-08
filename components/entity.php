@@ -113,14 +113,16 @@ function pagetype_uri(Page $page) : array
 
 
 /**
- * Generates a title for a page
+ * Generates a page view
  */
-function pagetype_page_title(int $id) : string
+function pagetype_page_view(int $id) : string
 {
     $page = Page::findOne($id);
 
+    drupal_set_title($page->title);
 
-    return $page->title ?? '';
+
+    return '';
 }
 
 

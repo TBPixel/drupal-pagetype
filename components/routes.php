@@ -12,7 +12,7 @@ function pagetype_menu() : array
      * Page Content Management
      */
     $routes['admin/pages'] = [
-        'title'             => t('Manage Pages'),
+        'title'             => t('Pages'),
         'description'       => t('Find and manage pages.'),
         'page callback'     => 'drupal_get_form',
         'weight'            => -9,
@@ -41,7 +41,8 @@ function pagetype_menu() : array
                 'title'             => t('Create @type', ['@type' => $type->name]),
                 'page callback'     => 'pagetype_new_form',
                 'page arguments'    => [$type->machine_name],
-                'access arguments'  => ['administer pages'],
+                'access callback'   => 'pagetype_access',
+                'access arguments'  => ['create'],
                 'type'              => MENU_LOCAL_ACTION
             ];
         }
@@ -98,11 +99,11 @@ function pagetype_menu() : array
      * Page CRUD routes
      */
     $routes['pages/%'] = [
-        'title callback'    => 'pagetype_page_title',
-        'title arguments'   => [1],
-        'page callback'     => 'pagetype_page_preview',
+        'title'             => t('Page'),
+        'page callback'     => 'pagetype_page_view',
         'page arguments'    => [1],
-        'access arguments'  => ['administer pages']
+        'access callback'   => 'pagetype_access',
+        'access arguments'  => ['view']
     ];
 
     $routes['pages/%/view'] = [
@@ -114,7 +115,8 @@ function pagetype_menu() : array
         'title'             => 'Edit',
         'page callback'     => 'drupal_get_form',
         'page arguments'    => ['pagetype_form', 1],
-        'access arguments'  => ['administer pages'],
+        'access callback'   => 'pagetype_access',
+        'access arguments'  => ['update', 1],
         'type'              => MENU_LOCAL_TASK,
         'context'           => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE
     ];
@@ -123,7 +125,8 @@ function pagetype_menu() : array
         'title'             => 'Delete',
         'page callback'     => 'drupal_get_form',
         'page arguments'    => ['pagetype_delete_confirm_form', 1],
-        'access arguments'  => ['administer pages'],
+        'access callback'   => 'pagetype_access',
+        'access arguments'  => ['delete', 1],
         'type'              => MENU_LOCAL_TASK,
         'context'           => MENU_CONTEXT_INLINE
     ];

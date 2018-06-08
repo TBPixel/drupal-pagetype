@@ -1,6 +1,7 @@
 <?php
 
 use TBPixel\PageType\Page;
+use TBPixel\PageType\Bundle;
 
 
 /**
@@ -20,37 +21,60 @@ function pagetype_new_form(string $type) : array
  */
 function pagetype_form(array $form, array &$state, Page $page) : array
 {
-    $state[Page::ENTITY_NAME] = $page;
+    $bundle = Bundle::find($page->type);
+
+    $state[Page::ENTITY_NAME]               = $page;
+    $state[Page::ENTITY_NAME . '_bundle']   = $bundle;
 
     $form['title'] = [
         '#title'         => t('Title'),
         '#type'          => 'textfield',
         '#default_value' => $page->title ?? '',
         '#required'      => TRUE,
-        '#weight'        => -50
+        '#weight'        => -5
     ];
+
+
+    $form['options'] = [
+        '#type'         => 'fieldset',
+        '#title'        => t('Publishing options'),
+        '#group'        => 'publishing_options',
+        '#collapsible'  => true,
+        '#collapsed'    => true,
+        '#weight'       => 95,
+    ];
+
+    $form['options']['published'] = [
+        '#title'            => t('Published'),
+        '#type'             => 'checkbox',
+        '#default_value'    => ($page->status === 'published') ? true : false
+    ];
+
+
+
+    $form['actions'] = [
+        '#type' => 'actions'
+    ];
+
+    $form['actions']['submit'] = [
+        '#type'     => 'submit',
+        '#submit'   => [Page::ENTITY_NAME . '_form_submit'],
+        '#value'    => (!empty($page->id)) ? t('Update page') : t('Create page'),
+        '#weight'   => 5
+    ];
+
+    if (!empty($page->id))
+    {
+        $form['actions']['delete'] = [
+            '#type'     => 'submit',
+            '#submit'   => [Page::ENTITY_NAME . '_form_delete_submit'],
+            '#value'    => t('Delete'),
+            '#weight'   => 15
+        ];
+    }
 
     pagetype_path_attach_field($form, $state);
     field_attach_form(Page::ENTITY_NAME, $page, $form, $state);
-
-    $form['status'] = [
-        '#title'        => t('Page Status'),
-        '#type'         => 'fieldset',
-        '#collapsible'  => true,
-        '#collapsed'    => false,
-        '#weight'       => 49
-    ];
-        $form['status']['published'] = [
-            '#title'            => t('Published'),
-            '#type'             => 'checkbox',
-            '#default_value'    => ($page->status === 'published') ? true : false
-        ];
-
-    $form['submit'] = [
-        '#type'     => 'submit',
-        '#value'    => (isset($page->id) && !empty($page->id)) ? t('Update page') : t('Create page'),
-        '#weight'   => 50
-    ];
 
 
     return $form;
@@ -90,11 +114,46 @@ function pagetype_form_submit(array $form, array &$state) : void
 
 
 /**
+ * Form to handle redirection to the confirm deletion form
+ */
+function pagetype_form_delete_submit(array $form, array &$state) : void
+{
+    $destination = [];
+
+    if (isset($_GET['destination']))
+    {
+        $destination = drupal_get_destination();
+        unset($_GET['destination']);
+    }
+
+    $page = $state[Page::ENTITY_NAME];
+
+
+    $state['redirect'] = [
+        "pages/{$page->id}/delete",
+        [
+            'query' => $destination
+        ]
+    ];
+}
+
+
+/**
  * Form to confirm deletion of pages
  */
 function pagetype_delete_confirm_form(array $form, array &$state, Page $page) : array
 {
-    return $form;
+    $state[Page::ENTITY_NAME] = $page;
+
+
+    return confirm_form(
+        $form,
+        t('Are you sure you want to delete @title', ['@title' => $page->title]),
+        "pages/{$page->id}",
+        t('This action cannot be undone.'),
+        t('Delete'),
+        t('Cancel')
+    );
 }
 
 
@@ -103,5 +162,25 @@ function pagetype_delete_confirm_form(array $form, array &$state, Page $page) : 
  */
 function pagetype_delete_confirm_form_submit(array $form, array &$state) : void
 {
+    /** @var Page $page */
+    $page = $state[Page::ENTITY_NAME];
 
+    if ($state['values']['confirm'])
+    {
+        $page->delete();
+
+        cache_clear_all();
+
+        $display = [
+            '@type'     => $page->type,
+            '@title'    => $page->title
+        ];
+
+        watchdog('pagetype', '@type: deleted @title.', $display);
+        drupal_set_message(
+            t('@type @title has been deleted.', $display)
+        );
+    }
+
+    $state['redirect'] = 'admin/pages';
 }

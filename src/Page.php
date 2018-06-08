@@ -181,7 +181,7 @@ class Page extends Model
             module_invoke_all('entity_delete', $this, static::ENTITY_NAME);
             field_attach_delete(static::ENTITY_NAME, $this);
 
-            db_delete(static::ENTITY_NAME)
+            db_delete(static::TABLE)
                 ->condition('id', $this->id)
                 ->execute();
         }

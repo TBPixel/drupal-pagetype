@@ -1,5 +1,6 @@
 <?php
 
+use TBPixel\PageType\Page;
 use TBPixel\PageType\Bundle;
 
 
@@ -14,6 +15,8 @@ function pagetype_type_form(array $form, array &$state, string $type = null) : a
         $bundle       = Bundle::find($machine_name);
     }
     else $bundle = new Bundle('', '');
+
+    $state[Page::ENTITY_NAME . '_bundle'] = $bundle;
 
 
     $form['machine_name'] = [
@@ -49,10 +52,27 @@ function pagetype_type_form(array $form, array &$state, string $type = null) : a
         '#default_value' => $bundle->has_continuity ?? false
     ];
 
-    $form['submit'] = [
-        '#type'     => 'submit',
-        '#value'    => ($bundle === null) ? 'Create page type' : 'Save page type'
+
+    $form['actions'] = [
+        '#type'     => 'actions'
     ];
+
+    $form['actions']['submit'] = [
+        '#type'     => 'submit',
+        '#submit'   => ['pagetype_type_form_submit'],
+        '#value'    => ($bundle === null) ? 'Create page type' : 'Save page type',
+        '#weight'   => 5
+    ];
+
+    if (!empty($bundle->machine_name))
+    {
+        $form['actions']['delete'] = [
+            '#type'     => 'submit',
+            '#submit'   => ['pagetype_type_form_delete_submit'],
+            '#value'    => 'delete',
+            '#weight'   => 15
+        ];
+    }
 
 
     return $form;
@@ -101,6 +121,31 @@ function pagetype_type_form_submit(array $form, array &$state) : void
 }
 
 
+/**
+ * Redirection to delete confirmation form
+ */
+function pagetype_type_form_delete_submit(array $form, array &$state) : void
+{
+    $destination = [];
+
+    if (isset($_GET['destination']))
+    {
+        $destination = drupal_get_destination();
+        unset($_GET['destination']);
+    }
+
+    $bundle = $state[Page::ENTITY_NAME . '_bundle'];
+
+
+    $state['redirect'] = [
+        "admin/structure/page-types/manage/{$bundle->machine_name}/delete",
+        [
+            'query' => $destination
+        ]
+    ];
+}
+
+
 
 /**
  * Confirmation form for the deletion of a page type
@@ -125,14 +170,14 @@ function pagetype_type_delete_confirm(array $form, array &$state, string $type) 
 
 
 /**
- * Confirmation of the form delete 
+ * Confirmation of the form delete
  */
 function pagetype_type_delete_confirm_submit(array $form, array &$state) : void
 {
     if ($state['values']['confirm'])
     {
         Bundle::delete($state['values']['pagetype']);
-        cache_clear_all();        
+        cache_clear_all();
     }
 
 
