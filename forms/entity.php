@@ -38,7 +38,7 @@ function pagetype_form(array $form, array &$state, Page $page) : array
     $form['options'] = [
         '#type'         => 'fieldset',
         '#title'        => t('Publishing options'),
-        '#group'        => 'publishing_options',
+        '#group'        => 'additional_settings',
         '#collapsible'  => true,
         '#collapsed'    => true,
         '#weight'       => 95,
