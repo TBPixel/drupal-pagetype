@@ -15,7 +15,7 @@ function pagetype_menu() : array
         'title'             => t('Pages'),
         'description'       => t('Find and manage pages.'),
         'page callback'     => 'drupal_get_form',
-        'weight'            => -9,
+        'weight'            => -16,
         'page arguments'    => ['pagetype_admin_pages'],
         'access arguments'  => ['administer pages']
     ];
