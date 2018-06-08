@@ -25,7 +25,6 @@ function pagetype_pathauto(string $operation)
     /** @var Bundle $type */
     foreach (Bundle::build() as $type)
     {
-        dump($type->machine_name);
         $settings['patternitems'][$type->machine_name] = t('Default pattern for @type page type.', ['@type' => $type->machine_name]);
     }
 
