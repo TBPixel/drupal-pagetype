@@ -14,16 +14,18 @@ function pagetype_pathauto(string $operation)
     if ($operation !== 'settings') return (object) $settings;
 
     $settings['module']                 = 'pagetype';
-    $settings['token_type']             = 'page';
-    $settings['patterndefault']         = '[page:title]';
+    $settings['token_type']             = Page::ENTITY_NAME;
+    $settings['patterndefault']         = '['. Page::ENTITY_NAME .':title]';
     $settings['groupheader']            = t('Page paths');
     $settings['patterndescr']           = t('Default path pattern');
+    // TODO: Write batch update callback
     $settings['batch_update_callback']  = 'node_pathauto_bulk_update_batch_process';
 
 
     /** @var Bundle $type */
     foreach (Bundle::build() as $type)
     {
+        dump($type->machine_name);
         $settings['patternitems'][$type->machine_name] = t('Default pattern for @type page type.', ['@type' => $type->machine_name]);
     }
 
@@ -38,7 +40,7 @@ function pagetype_pathauto(string $operation)
 function pagetype_path_alias_types()
 {
     return [
-        'page/' => t('Page')
+        'pages/' => t('Page')
     ];
 }
 
@@ -63,21 +65,21 @@ function pagetype_page_update_alias(Page $page, string $operation, array $option
     ) return false;
 
     $options += [
-        'language' => pathauto_entity_language('page', $page)
+        'language' => pathauto_entity_language(Page::ENTITY_NAME, $page)
     ];
 
     // Skip processing if the Page has no pattern
-    if (!pathauto_pattern_load_by_entity('page', $page->type, $options['language'])) return false;
+    if (!pathauto_pattern_load_by_entity(Page::ENTITY_NAME, $page->type, $options['language'])) return false;
 
     module_load_include('inc', 'pathauto');
-    $uri = entity_uri('page', $page);
+    $uri = entity_uri(Page::ENTITY_NAME, $page);
 
 
     return pathauto_create_alias(
-        'page',
+        Page::ENTITY_NAME,
         $operation,
         $uri['path'],
-        ['page' => $page],
+        [Page::ENTITY_NAME => $page],
         $page->type,
         $options['language']
     );
@@ -87,13 +89,12 @@ function pagetype_page_update_alias(Page $page, string $operation, array $option
 /**
  * Callback to alter form, adding pathauto field if pathauto is enabled
  */
-function pagetype_pathauto_attach_field(array &$form, array &$state) : void
-{
-    if (!module_exists('pathauto')) return;
+// function pagetype_pathauto_attach_field(array &$form, array &$state) : void
+// {
+//     if (!module_exists('pathauto')) return;
 
+//     $page       = $state[Page::ENTITY_NAME];
+//     $langcode   = pathauto_entity_language(Page::ENTITY_NAME, $page);
 
-    $page       = $state['page'];
-    $langcode   = pathauto_entity_language('page', $page);
-
-    pathauto_field_attach_form('page', $page, $form, $state, $langcode);
-}
+//     pathauto_field_attach_form(Page::ENTITY_NAME, $page, $form, $state, $langcode);
+// }

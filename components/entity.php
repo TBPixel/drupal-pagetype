@@ -10,7 +10,7 @@ use TBPixel\PageType\Exceptions\MissingBundle;
  */
 function pagetype_entity_info() : array
 {
-    $types['page'] = [
+    $types['pagetype'] = [
         'label'             => t('Page'),
         'plural label'      => t('Pages'),
         'base table'        => 'pages',
@@ -43,10 +43,10 @@ function pagetype_entity_info() : array
     /** @var Bundle $type */
     foreach(Bundle::build() as $type)
     {
-        $types['page']['bundles'][$type->machine_name] = [
+        $types[Page::ENTITY_NAME]['bundles'][$type->machine_name] = [
             'label' => $type->name,
             'admin' => [
-                'path'              => 'admin/structure/page-types/manage/%page_type',
+                'path'              => 'admin/structure/page-types/manage/%pagetype_type',
                 'real path'         => 'admin/structure/page-types/manage/' . $type->uri(),
                 'bundle argument'   => 4,
                 'access arguments'  => ['administer pages']
@@ -60,9 +60,9 @@ function pagetype_entity_info() : array
 
 
 /**
- * hook_page_insert()
+ * hook_pagetype_insert()
  */
-function pagetype_page_insert(Page $page)
+function pagetype_pagetype_insert(Page $page)
 {
     pagetype_page_path_insert($page);
 
@@ -71,9 +71,9 @@ function pagetype_page_insert(Page $page)
 
 
 /**
- * hook_page_update()
+ * hook_pagetype_update()
  */
-function pagetype_page_update(Page $page)
+function pagetype_pagetype_update(Page $page)
 {
     pagetype_page_path_update($page);
 
@@ -82,18 +82,18 @@ function pagetype_page_update(Page $page)
 
 
 /**
- * hook_page_delete()
+ * hook_pagetype_delete()
  */
-function pagetype_page_delete(Page $page)
+function pagetype_pagetype_delete(Page $page)
 {
     pagetype_page_path_delete($page);
 
     if (module_exists('pathauto'))
     {
-        $uri = entity_uri('page', $page);
+        $uri = entity_uri(Page::ENTITY_NAME, $page);
 
         pathauto_entity_path_delete_all(
-            'page',
+            Page::ENTITY_NAME,
             $page,
             $uri['path']
         );
@@ -142,12 +142,12 @@ function pagetype_page_preview(int $id) : string
     ];
 
     $fields = array_keys(
-        field_info_instances('page', $page->type)
+        field_info_instances(Page::ENTITY_NAME, $page->type)
     );
 
     foreach ($fields as $field)
     {
-        $build[$field] = field_view_field('page', $page, $field);
+        $build[$field] = field_view_field(Page::ENTITY_NAME, $page, $field);
     }
 
 
@@ -158,7 +158,7 @@ function pagetype_page_preview(int $id) : string
 /**
  * Page load callback
  */
-function page_load(int $id) : ?Page
+function pagetype_load(int $id) : ?Page
 {
     return Page::findOne($id);
 }
@@ -167,7 +167,7 @@ function page_load(int $id) : ?Page
 /**
  * Page load multiple callback
  */
-function page_load_multiple(array $ids) : array
+function pagetype_load_multiple(array $ids) : array
 {
     return Page::find($ids);
 }
@@ -176,11 +176,11 @@ function page_load_multiple(array $ids) : array
 /**
  * Page type load callback
  */
-function page_type_load(string $uri) : string
+function pagetype_type_load(string $uri) : string
 {
     $machine_name = str_replace('-', '_', $uri);
 
-    if (is_null($bundle = Bundle::find($machine_name))) throw new MissingBundle('page', $machine_name);
+    if (is_null($bundle = Bundle::find($machine_name))) throw new MissingBundle(Page::ENTITY_NAME, $machine_name);
 
 
     return $bundle->machine_name;

@@ -39,7 +39,7 @@ function pagetype_menu() : array
         {
             $routes['admin/pages/' . $type->uri() . '/add'] = [
                 'title'             => t('Create @type', ['@type' => $type->name]),
-                'page callback'     => 'page_new_form',
+                'page callback'     => 'pagetype_new_form',
                 'page arguments'    => [$type->machine_name],
                 'access arguments'  => ['administer pages'],
                 'type'              => MENU_LOCAL_ACTION
@@ -74,20 +74,20 @@ function pagetype_menu() : array
         'access arguments'  => ['administer pages']
     ];
 
-    $routes['admin/structure/page-types/manage/%page_type'] = [
+    $routes['admin/structure/page-types/manage/%pagetype_type'] = [
         'title'             => t('Edit Page Type'),
         'page callback'     => 'drupal_get_form',
         'page arguments'    => ['pagetype_type_form', 4],
         'access arguments'  => ['administer pages']
     ];
 
-    $routes['admin/structure/page-types/manage/%page_type/edit'] = [
+    $routes['admin/structure/page-types/manage/%pagetype_type/edit'] = [
         'title'             => 'Edit',
         'type'              => MENU_DEFAULT_LOCAL_TASK,
         'access arguments'  => ['administer pages']
     ];
 
-    $routes['admin/structure/page-types/manage/%page_type/delete'] = [
+    $routes['admin/structure/page-types/manage/%pagetype_type/delete'] = [
         'title'             => 'Delete',
         'page arguments'    => ['pagetype_type_delete_confirm', 4],
         'access arguments'  => ['administer pages'],
@@ -110,19 +110,19 @@ function pagetype_menu() : array
         'type'  => MENU_DEFAULT_LOCAL_TASK
     ];
 
-    $routes['pages/%page/edit'] = [
+    $routes['pages/%pagetype/edit'] = [
         'title'             => 'Edit',
         'page callback'     => 'drupal_get_form',
-        'page arguments'    => ['page_form', 1],
+        'page arguments'    => ['pagetype_form', 1],
         'access arguments'  => ['administer pages'],
         'type'              => MENU_LOCAL_TASK,
         'context'           => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE
     ];
 
-    $routes['pages/%page/delete'] = [
+    $routes['pages/%pagetype/delete'] = [
         'title'             => 'Delete',
         'page callback'     => 'drupal_get_form',
-        'page arguments'    => ['page_delete_confirm_form', 1],
+        'page arguments'    => ['pagetype_delete_confirm_form', 1],
         'access arguments'  => ['administer pages'],
         'type'              => MENU_LOCAL_TASK,
         'context'           => MENU_CONTEXT_INLINE

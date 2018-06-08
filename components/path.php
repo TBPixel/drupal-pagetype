@@ -10,16 +10,16 @@ function pagetype_path_attach_field(array &$form, array &$state) : void
 {
     // Support path module
     $path = [];
-    $page = $state['page'];
+    $page = $state[Page::ENTITY_NAME];
 
     $path_defaults = [
         'pid'       => null,
-        'source'    => ($page->id) ? "page/{$page->id}" : null,
+        'source'    => ($page->id) ? "pages/{$page->id}" : null,
         'alias'     => '',
         'language'  => $page->language
     ];
 
-    $uri = entity_uri('page', $page);
+    $uri = entity_uri(Page::ENTITY_NAME, $page);
 
     $conditions = [
         'source'    => $uri['path'],
@@ -67,7 +67,7 @@ function pagetype_path_attach_field(array &$form, array &$state) : void
 
     $form['path']['language'] = [
         '#type'     => 'value',
-        '#value'    => $page->  path['language']
+        '#value'    => $page->path['language']
     ];
 }
 
@@ -83,7 +83,7 @@ function pagetype_page_path_insert(Page $page) : void
 
     if (empty($page->path['alias'])) return;
 
-    $uri = entity_uri('page', $page);
+    $uri = entity_uri(Page::ENTITY_NAME, $page);
 
     $page->path['source']   = $uri['path'];
     $page->path['language'] = $page->language;
@@ -111,7 +111,7 @@ function pagetype_page_path_update(Page $page) : void
  */
 function pagetype_page_path_delete(Page $page) : void
 {
-    $uri = entity_uri('page', $page);
+    $uri = entity_uri(Page::ENTITY_NAME, $page);
 
     path_delete([
         'source' => $uri['path']

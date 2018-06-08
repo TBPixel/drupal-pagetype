@@ -1,5 +1,10 @@
 <?php
 
+require_once 'vendor/autoload.php';
+
+
+use TBPixel\PageType\Page;
+
 
 /**
  * hook_schema()
@@ -121,7 +126,7 @@ function pagetype_install() : void
         'type'          => 'text_with_summary',
         'module'        => 'text',
         'cardinality'   => 1,
-        'entity_types'  => ['page'],
+        'entity_types'  => [Page::ENTITY_NAME],
         'translatable'  => TRUE
     ]);
 
@@ -150,7 +155,7 @@ function pagetype_get_body_instance(string $type) : array
 {
     return [
         'field_name'    => 'page_body',
-            'entity_type'   => 'page',
+            'entity_type'   => Page::ENTITY_NAME,
             'bundle'        => $type,
             'label'         => 'Body',
             'widget' => [

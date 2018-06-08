@@ -69,7 +69,7 @@ function pagetype_admin_pages_pages(?string $filter) : array
     if (count($ids) <= 0) return $form;
 
 
-    $pages       = page_load_multiple($ids);
+    $pages       = pagetype_load_multiple($ids);
     $destination = drupal_get_destination();
 
     // Prepare the list of nodes.
@@ -77,7 +77,7 @@ function pagetype_admin_pages_pages(?string $filter) : array
 
     foreach ($pages as $page)
     {
-        $uri = entity_uri('page', $page);
+        $uri = entity_uri(Page::ENTITY_NAME, $page);
 
         $operations['edit'] = [
             'title' => t('edit'),

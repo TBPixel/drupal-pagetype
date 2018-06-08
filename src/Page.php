@@ -11,7 +11,8 @@ use DateTime;
 
 class Page extends Model
 {
-    const TABLE = 'pages';
+    const TABLE       = 'pages';
+    const ENTITY_NAME = 'pagetype';
 
     /**
      * @var int
@@ -50,7 +51,7 @@ class Page extends Model
         $this->setType($type);
         $this->setCreated(new DateTime);
         $this->setStatus('unpublished');
-        $this->language = ($langcode = entity_language('page', $this)) ? $langcode : LANGUAGE_NONE;
+        $this->language = ($langcode = entity_language('pagetype', $this)) ? $langcode : LANGUAGE_NONE;
     }
 
 
@@ -59,7 +60,7 @@ class Page extends Model
     {
         if (empty($ids)) return [];
 
-        $results = entity_load('page', $ids);
+        $results = entity_load(static::ENTITY_NAME, $ids);
 
 
         return array_map(
@@ -100,7 +101,7 @@ class Page extends Model
 
         try
         {
-            field_attach_presave('page', $this);
+            field_attach_presave(static::ENTITY_NAME, $this);
 
             $is_new     = (!$this->id);
             $operation  = $is_new ? 'insert' : 'update';
@@ -113,8 +114,8 @@ class Page extends Model
             }
 
             // Let modules modify the node before it is saved to the database.
-            module_invoke_all('page_presave', $this);
-            module_invoke_all('entity_presave', $this, 'page');
+            module_invoke_all(static::ENTITY_NAME . '_presave', $this);
+            module_invoke_all('entity_presave', $this, static::ENTITY_NAME);
 
 
             if ($is_new)
@@ -128,7 +129,7 @@ class Page extends Model
                 ]);
                 $this->id = $query->execute();
 
-                field_attach_insert('page', $this);
+                field_attach_insert(static::ENTITY_NAME, $this);
             }
             else
             {
@@ -142,13 +143,13 @@ class Page extends Model
                 $query->condition('id', $this->id);
                 $query->execute();
 
-                field_attach_update('page', $this);
+                field_attach_update(static::ENTITY_NAME, $this);
             }
 
-            module_invoke_all("page_{$operation}", $this);
-            module_invoke_all("entity_{$operation}", $this, 'page');
+            module_invoke_all(static::ENTITY_NAME . "_{$operation}", $this);
+            module_invoke_all("entity_{$operation}", $this, static::ENTITY_NAME);
 
-            entity_get_controller('page')->resetCache([$this->id]);
+            entity_get_controller(static::ENTITY_NAME)->resetCache([$this->id]);
 
 
             db_ignore_slave();
@@ -176,11 +177,11 @@ class Page extends Model
 
         try
         {
-            module_invoke_all('page_delete', $this);
-            module_invoke_all('entity_delete', $this, 'page');
-            field_attach_delete('page', $this);
+            module_invoke_all(static::ENTITY_NAME . '_delete', $this);
+            module_invoke_all('entity_delete', $this, static::ENTITY_NAME);
+            field_attach_delete(static::ENTITY_NAME, $this);
 
-            db_delete('page')
+            db_delete(static::ENTITY_NAME)
                 ->condition('id', $this->id)
                 ->execute();
         }
