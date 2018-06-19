@@ -86,10 +86,11 @@ class Page extends Model
             $query->condition($field, $value);
         }
 
-        $results = $query->execute()->fetchAll();
+        $results = $query->execute()->fetchCol();
+        $results = reset($results);
 
 
-        return static::find($results);
+        return static::find([$results]);
     }
 
 
