@@ -5,11 +5,27 @@ use TBPixel\PageType\Bundle;
 
 
 /**
- * Returns a pagetype form given the
+ * Returns a pagetype form given the type
  */
 function pagetype_new_form(string $type) : array
 {
     $page = new Page($type);
+
+
+    return drupal_get_form('pagetype_form', $page);
+}
+
+
+/**
+ * Returns a pagetype form given the type
+ */
+function pagetype_single_form(string $type) : array
+{
+    $page = Page::findOneBy([
+        'type' => $type
+    ]);
+
+    if (!$page) $page = new Page($type);
 
 
     return drupal_get_form('pagetype_form', $page);

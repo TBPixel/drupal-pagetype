@@ -28,15 +28,15 @@ function pagetype_menu() : array
     /** @var Bundle $type */
     foreach (Bundle::build() as $type)
     {
-        $routes['admin/pages/' . $type->uri()] = [
-            'title'             => $type->plural,
-            'page callback'     => 'drupal_get_form',
-            'page arguments'    => ['pagetype_admin_pages', $type->machine_name],
-            'access arguments'  => ['administer pages']
-        ];
-
         if ($type->has_continuity)
         {
+            $routes['admin/pages/' . $type->uri()] = [
+                'title'             => $type->plural,
+                'page callback'     => 'drupal_get_form',
+                'page arguments'    => ['pagetype_admin_pages', $type->machine_name],
+                'access arguments'  => ['administer pages']
+            ];
+
             $routes['admin/pages/' . $type->uri() . '/add'] = [
                 'title'             => t('Create @type', ['@type' => $type->name]),
                 'page callback'     => 'pagetype_new_form',
@@ -44,6 +44,16 @@ function pagetype_menu() : array
                 'access callback'   => 'pagetype_access',
                 'access arguments'  => ['create'],
                 'type'              => MENU_LOCAL_ACTION
+            ];
+        }
+        else
+        {
+            $routes['admin/pages/' . $type->uri()] = [
+                'title'             => $type->plural,
+                'page callback'     => 'pagetype_single_form',
+                'page arguments'    => [$type->machine_name],
+                'access callback'   => 'pagetype_access',
+                'access arguments'  => ['create']
             ];
         }
     }

@@ -63,31 +63,39 @@ class Page extends Model
         $results = entity_load(static::ENTITY_NAME, $ids);
 
 
-        return array_map(
-            function($page)
-            {
-                $static = new static($page->type);
-
-                if ($page->id)      $static->setId($page->id);
-                if ($page->title)   $static->setTitle($page->title);
-                if ($page->created) $static->setCreated(new DateTime("@{$page->created}"));
-                if ($page->status)  $static->setStatus($page->status);
-
-                foreach ($page as $key => $value)
-                {
-                    if (!property_exists($static, $key)) $static->{$key} = $value;
-                }
-
-                return $static;
-            },
-            $results
-        );
+        return static::mapDbResults($results);
     }
 
 
     public static function findOne(int $id) : ?Page
     {
         $results = static::find([$id]);
+
+
+        return ($page = reset($results)) ? $page : null;
+    }
+
+
+    public static function findBy(array $conditions) : array
+    {
+        $query = db_select(static::TABLE);
+        $query->fields(static::TABLE, ['id']);
+
+        foreach ($conditions as $field => $value)
+        {
+            $query->condition($field, $value);
+        }
+
+        $results = $query->execute()->fetchAll();
+
+
+        return static::find($results);
+    }
+
+
+    public static function findOneBy(array $conditions) : ?Page
+    {
+        $results = static::findBy($conditions);
 
 
         return ($page = reset($results)) ? $page : null;
@@ -240,5 +248,32 @@ class Page extends Model
 
 
         $this->status = $status;
+    }
+
+
+    /**
+     *
+     */
+    private static function mapDbResults(array $results) : array
+    {
+        return array_map(
+            function($page)
+            {
+                $static = new static($page->type);
+
+                if ($page->id)      $static->setId($page->id);
+                if ($page->title)   $static->setTitle($page->title);
+                if ($page->created) $static->setCreated(new DateTime("@{$page->created}"));
+                if ($page->status)  $static->setStatus($page->status);
+
+                foreach ($page as $key => $value)
+                {
+                    if (!property_exists($static, $key)) $static->{$key} = $value;
+                }
+
+                return $static;
+            },
+            $results
+        );
     }
 }
