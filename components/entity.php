@@ -115,9 +115,15 @@ function pagetype_uri(Page $page) : array
 /**
  * Generates a page view
  */
-function pagetype_page_view(int $id, $view_mode = 'full') : array
+function pagetype_page_view($page, string $view_mode = 'full') : array
 {
-    $page = Page::findOne($id);
+    if (!($page instanceof Page))
+    {
+        drupal_not_found();
+        drupal_exit();
+
+        return [];
+    }
 
     $page->content  = [];
 

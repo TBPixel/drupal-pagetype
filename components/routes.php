@@ -108,15 +108,15 @@ function pagetype_menu() : array
     /**
      * Page CRUD routes
      */
-    $routes['pages/%'] = [
+    $routes['pages/%pagetype'] = [
         'title'             => t('Page'),
         'page callback'     => 'pagetype_page_view',
         'page arguments'    => [1],
         'access callback'   => 'pagetype_access',
-        'access arguments'  => ['view']
+        'access arguments'  => ['view', 1]
     ];
 
-    $routes['pages/%/view'] = [
+    $routes['pages/%pagetype/view'] = [
         'title' => 'View',
         'type'  => MENU_DEFAULT_LOCAL_TASK
     ];

@@ -21,8 +21,8 @@ function pagetype_permission() : array
 /**
  * Pagetype access check and callback
  */
-function pagetype_access(string $op, Page $page = null, $account = null) : bool
+function pagetype_access(string $op, $page = null, $account = null) : bool
 {
-    if ($op === 'view' && isset($page) && $page->status === 'published') return true;
+    if ($op === 'view' && ($page instanceof Page) && $page->status === 'published') return true;
     else return user_access('administer pages', $account);
 }
