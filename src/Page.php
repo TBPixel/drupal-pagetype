@@ -58,6 +58,11 @@ class Page extends Model
 
     public static function find(array $ids) : array
     {
+        foreach ($ids as $key => $id)
+        {
+            if ($id === false || $id === null) unset($ids[$key]);
+        }
+
         if (empty($ids)) return [];
 
         $results = entity_load(static::ENTITY_NAME, $ids);
