@@ -60,6 +60,22 @@ function pagetype_entity_info() : array
 
 
 /**
+ * hook_entity_load()
+ */
+function pagetype_entity_load(array &$entities, string $type) : void
+{
+    if ($type !== Page::ENTITY_NAME) return;
+
+    $pages = Page::mapDbResults($entities);
+
+    foreach ($entities as $key => $entity)
+    {
+        $entities[$key] = $pages[$key];
+    }
+}
+
+
+/**
  * hook_pagetype_insert()
  */
 function pagetype_pagetype_insert(Page $page)

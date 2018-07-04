@@ -258,9 +258,9 @@ class Page extends Model
 
 
     /**
-     *
+     * Maps entity_load database results to Page model
      */
-    private static function mapDbResults(array $results) : array
+    public static function mapDbResults(array $results) : array
     {
         return array_map(
             function($page)
