@@ -148,10 +148,7 @@ function pagetype_uninstall() : void
 {
     $instance = pagetype_get_body_instance('basic');
 
-    if (field_info_instance($instance['entity_type'], $instance['field_name'], $instance['bundle']))
-    {
-        field_delete_instance($instance);
-    }
+    field_delete_field($instance['field_name']);
 }
 
 
