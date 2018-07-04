@@ -269,7 +269,8 @@ class Page extends Model
 
                 if ($page->id)      $static->setId($page->id);
                 if ($page->title)   $static->setTitle($page->title);
-                if ($page->created) $static->setCreated(new DateTime("@{$page->created}"));
+                if (is_numeric($page->created)) $static->setCreated(new DateTime("@{$page->created}"));
+                elseif ($page->created instanceof DateTimeInterface) $static->setCreated($page->created);
                 if ($page->status)  $static->setStatus($page->status);
 
                 foreach ($page as $key => $value)
