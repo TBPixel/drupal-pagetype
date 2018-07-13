@@ -2,11 +2,11 @@
 
 /**
  * @file
+ * Defines administrative forms for the pagetype module.
  */
 
 use TBPixel\PageType\Page;
 use TBPixel\PageType\Bundle;
-
 
 /**
  * Page callback: Admin form for pages.
@@ -155,8 +155,8 @@ function pagetype_admin_pages_filter_form_submit(array $form, array &$state) : v
 function pagetype_filters() : array {
   $types = [];
 
-  foreach (Bundle::build() as $key => $type) {
-    $types[$type->machine_name] = $type->name;
+  foreach (Bundle::build() as $type) {
+    $types[$type->machineName] = $type->name;
   }
 
   $filters['status'] = [
@@ -200,8 +200,7 @@ function pagetype_build_filter_query(SelectQueryInterface $query) {
  * Form builder: Builds the page admin overview form.
  */
 function pagetype_admin_pages_pages(?string $filter) : array {
-  $admin_access = user_access('administer pages');
-  $form         = [];
+  $form = [];
 
   // Build the sortable table header.
   $header = [

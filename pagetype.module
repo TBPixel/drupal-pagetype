@@ -2,17 +2,13 @@
 
 /**
  * @file
+ * Pagetype module file, includes all the various parts that power the pagetype entity type.
  */
 
 /**
  * Composer PSR-4 Autoloader.
  */
 require_once 'vendor/autoload.php';
-
-/**
- * Help and Resources.
- */
-require_once 'components/help.php';
 
 /**
  * Form structure and validation.
@@ -58,3 +54,32 @@ require_once 'components/path.php';
  * Pathauto optional hook implementation.
  */
 require_once 'components/pathauto.php';
+
+/**
+ * Hook_help()
+ */
+function pagetype_help(string $path, $arg) : string {
+  if ($path !== 'admin/help#pagetype') {
+    return '';
+  }
+
+  $filepath = drupal_get_path('module', 'pagetype') . '/README.md';
+  $readme   = file_exists($filepath) ? file_get_contents($filepath) : NULL;
+
+  if (module_exists('markdown')) {
+    $filters = module_invoke('markdown', 'filter_info');
+    $info    = $filters['filter_markdown'];
+
+    if (function_exists($info['process callback'])) {
+      $output = $info['process callback']($readme, NULL);
+    }
+    else {
+      $output = '<pre>' . $readme . '</pre>';
+    }
+  }
+  else {
+    $output = '<pre>' . $readme . '</pre>';
+  }
+
+  return $output;
+}

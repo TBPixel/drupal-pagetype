@@ -2,10 +2,10 @@
 
 /**
  * @file
+ * Defines access permissions for the pagetype module.
  */
 
 use TBPixel\PageType\Page;
-
 
 /**
  * Hook_permission()

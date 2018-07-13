@@ -2,11 +2,11 @@
 
 /**
  * @file
+ * Defines pathauto module integrations and hooks.
  */
 
 use TBPixel\PageType\Bundle;
 use TBPixel\PageType\Page;
-
 
 /**
  * Hook_pathauto()
@@ -27,7 +27,7 @@ function pagetype_pathauto(string $operation) {
 
   /** @var \TBPixel\PageType\Bundle $type */
   foreach (Bundle::build() as $type) {
-    $settings['patternitems'][$type->machine_name] = t('Default pattern for @type page type.', ['@type' => $type->machine_name]);
+    $settings['patternitems'][$type->machineName] = t('Default pattern for @type page type.', ['@type' => $type->machineName]);
   }
 
   return (object) $settings;
@@ -44,13 +44,6 @@ function pagetype_path_alias_types() {
 
 /**
  * Update the URL aliases for an individual Page.
- *
- * @param $page
- *   A Page object.
- * @param $op
- *   Operation being performed on the Page ('insert', 'update' or 'bulkupdate').
- * @param $options
- *   An optional array of additional options.
  */
 function pagetype_page_update_alias(Page $page, string $operation, array $options = []) {
   // Skip processing if the user has disabled pathauto for the page.

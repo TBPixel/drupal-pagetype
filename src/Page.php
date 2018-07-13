@@ -14,31 +14,43 @@ class Page extends Model {
   const ENTITY_NAME = 'pagetype';
 
   /**
+   * The ID of the Page model.
+   *
    * @var int
    */
   protected $id;
 
   /**
+   * The Bundle of the Page model.
+   *
    * @var string
    */
   protected $type;
 
   /**
+   * The title of the Page model.
+   *
    * @var string
    */
   protected $title;
 
   /**
+   * The date the Page model was created.
+   *
    * @var \DateTimeInterface
    */
   protected $created;
 
   /**
+   * The published status of the Page model.
+   *
    * @var string
    */
   protected $status;
 
   /**
+   * The language of the Page model.
+   *
    * @var string
    */
   protected $language;
@@ -108,8 +120,7 @@ class Page extends Model {
   }
 
   /**
-   * DB Request to save the current Page object to the DB.
-   * Performs either a create or update statement.
+   * DB Request to save the current Page object to the DB. Performs either a create or update statement.
    */
   public function save() : Page {
     $transaction = db_transaction();
@@ -248,9 +259,7 @@ class Page extends Model {
   }
 
   /**
-   * Sets the status of the page eg:
-   *  - 'published'
-   *  - 'unpublished'.
+   * Sets the status of the page, eg 'published'.
    */
   public function setStatus(string $status) : void {
     if (strlen($status) > 32) {

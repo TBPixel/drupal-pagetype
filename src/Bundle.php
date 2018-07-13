@@ -11,40 +11,45 @@ class Bundle extends Model {
 
 
   /**
+   * Machine name of the Bundle.
+   *
    * @var string
-   * Machine name of the Bundle
    */
-  protected $machine_name;
+  protected $machineName;
 
   /**
+   * Human readable name of the Bundle.
+   *
    * @var string
-   * Human readable name of the Bundle
    */
   protected $name;
 
   /**
+   * Pluralized name of the Bundle.
+   *
    * @var string
-   * Pluralized name of the Bundle
    */
   protected $plural;
 
   /**
+   * Description of the Bundle.
+   *
    * @var string
-   * Description of the Bundle
    */
   protected $description;
 
   /**
+   * Whether the bundle has continuity or not.
+   *
    * @var int
-   * Whether the bundle has continuity or not
    */
-  protected $has_continuity;
+  protected $hasContinuity;
 
   /**
    * Constructor.
    */
-  public function __construct(string $machine_name, string $name) {
-    $this->setMachineName($machine_name);
+  public function __construct(string $machineName, string $name) {
+    $this->setMachineName($machineName);
     $this->setName($name);
     $this->setPlural($name);
     $this->setDescription('');
@@ -54,12 +59,12 @@ class Bundle extends Model {
   /**
    * Sets the machine name of the bundle.
    */
-  public function setMachineName(string $machine_name) : void {
-    if (strlen($machine_name) > 32) {
+  public function setMachineName(string $machineName) : void {
+    if (strlen($machineName) > 32) {
       return;
     }
 
-    $this->machine_name = $machine_name;
+    $this->machineName = $machineName;
   }
 
   /**
@@ -95,7 +100,7 @@ class Bundle extends Model {
    * Sets whether this bundle has continuity.
    */
   public function setHasContinuity(bool $is_reusable) : void {
-    $this->has_continuity = (int) $is_reusable;
+    $this->hasContinuity = (int) $is_reusable;
   }
 
   /**
@@ -134,7 +139,7 @@ class Bundle extends Model {
 
     /** @var Bundle $type */
     foreach ($types as $type) {
-      if (!static::find($type->machine_name)) {
+      if (!static::find($type->machineName)) {
         $type->save();
       }
     }
@@ -162,18 +167,18 @@ class Bundle extends Model {
   /**
    * Find a bundle by name.
    */
-  public static function find(string $machine_name) : ?Bundle {
+  public static function find(string $machineName) : ?Bundle {
     $query = db_select(static::TABLE);
     $query->fields(static::TABLE);
-    $query->condition('machine_name', $machine_name);
+    $query->condition('machine_name', $machineName);
     $result = $query->execute()->fetch();
 
     if (!$result) {
       return NULL;
     }
 
-    $bundle = new static($result->machine_name, $result->name, $result->description);
-    $bundle->setHasContinuity($result->has_continuity);
+    $bundle = new static($result->machineName, $result->name, $result->description);
+    $bundle->setHasContinuity($result->hasContinuity);
 
     return $bundle;
   }
@@ -181,9 +186,9 @@ class Bundle extends Model {
   /**
    * Deletes a bundle by it's machine_name.
    */
-  public static function delete(string $machine_name) : void {
+  public static function delete(string $machineName) : void {
     db_delete(static::TABLE)
-      ->condition('machine_name', $machine_name)
+      ->condition('machine_name', $machineName)
       ->execute();
   }
 
@@ -191,14 +196,14 @@ class Bundle extends Model {
    * Saves the current instance to the database.
    */
   public function save() : Bundle {
-    if (!static::find($this->machine_name)) {
+    if (!static::find($this->machineName)) {
       $query = db_insert(static::TABLE);
       $query->fields([
-        'machine_name'   => $this->machine_name,
+        'machineName'   => $this->machineName,
         'name'           => $this->name,
         'plural'         => $this->plural,
         'description'    => $this->description,
-        'has_continuity' => $this->has_continuity,
+        'has_continuity' => $this->hasContinuity,
       ]);
       $query->execute();
     }
@@ -208,9 +213,9 @@ class Bundle extends Model {
         'name'           => $this->name,
         'plural'         => $this->plural,
         'description'    => $this->description,
-        'has_continuity' => $this->has_continuity,
+        'has_continuity' => $this->hasContinuity,
       ]);
-      $query->condition('machine_name', $this->machine_name);
+      $query->condition('machine_name', $this->machineName);
       $query->execute();
     }
 
@@ -221,7 +226,7 @@ class Bundle extends Model {
    * Returns the URI of the given Bundle.
    */
   public function uri() : string {
-    return str_replace('_', '-', $this->machine_name);
+    return str_replace('_', '-', $this->machineName);
   }
 
 }

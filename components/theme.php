@@ -2,11 +2,11 @@
 
 /**
  * @file
+ * Defines pagetype themeing and theme callbacks.
  */
 
 use TBPixel\PageType\Page;
 use TBPixel\PageType\Bundle;
-
 
 /**
  * Hook_theme()
@@ -39,7 +39,7 @@ function theme_pagetype_admin_types(array $variables) : string {
   }
 
   $output = check_plain($type->name);
-  $output .= "<div><small>Machine name: {$type->machine_name}</small></div>";
+  $output .= "<div><small>Machine name: {$type->machineName}</small></div>";
   $output .= '<div class="description">' . filter_xss_admin($type->description) . '</div>';
 
   return $output;

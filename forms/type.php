@@ -2,19 +2,19 @@
 
 /**
  * @file
+ * Defines forms for custom pagetype types.
  */
 
 use TBPixel\PageType\Page;
 use TBPixel\PageType\Bundle;
-
 
 /**
  * Page type create / edit form.
  */
 function pagetype_type_form(array $form, array &$state, string $type = NULL) : array {
   if ($type) {
-    $machine_name = str_replace('-', '_', $type);
-    $bundle       = Bundle::find($machine_name);
+    $machineName = str_replace('-', '_', $type);
+    $bundle      = Bundle::find($machineName);
   }
   else {
     $bundle = new Bundle('', '');
@@ -25,7 +25,7 @@ function pagetype_type_form(array $form, array &$state, string $type = NULL) : a
   $form['machine_name'] = [
     '#type'          => 'textfield',
     '#title'         => 'Machine Name',
-    '#default_value' => $bundle->machine_name ?? '',
+    '#default_value' => $bundle->machineName ?? '',
     '#required'      => TRUE,
   ];
 
@@ -51,8 +51,8 @@ function pagetype_type_form(array $form, array &$state, string $type = NULL) : a
   $form['has_continuity'] = [
     '#type'          => 'checkbox',
     '#title'         => 'Has Continuity',
-    '#description'   => 'Determines whether the pagetype can be reused (like a node) or not.',
-    '#default_value' => $bundle->has_continuity ?? FALSE,
+    '#description'   => t('Determines whether the pagetype can be reused (like a node) or not.'),
+    '#default_value' => $bundle->hasContinuity ?? FALSE,
   ];
 
   $form['actions'] = [
@@ -66,7 +66,7 @@ function pagetype_type_form(array $form, array &$state, string $type = NULL) : a
     '#weight'   => 5,
   ];
 
-  if (!empty($bundle->machine_name)) {
+  if (!empty($bundle->machineName)) {
     $form['actions']['delete'] = [
       '#type'     => 'submit',
       '#submit'   => ['pagetype_type_form_delete_submit'],
@@ -85,13 +85,13 @@ function pagetype_type_form_validate(array $form, array &$state) : void {
   $values = $state['values'];
 
   if (strlen($values['name']) > 255) {
-    form_set_error('name', 'Name may not be greater than 255 characters!');
+    form_set_error('name', t('Name may not be greater than 255 characters!'));
   }
   if (strlen($values['plural']) > 255) {
-    form_set_error('plural', 'Plural Name may not be greater than 255 characters!');
+    form_set_error('plural', t('Plural Name may not be greater than 255 characters!'));
   }
   if (strlen($values['machine_name']) > 32) {
-    form_set_error('machine_name', 'Machine name may not be greater than 32 characters!');
+    form_set_error('machine_name', t('Machine name may not be greater than 32 characters!'));
   }
 }
 
@@ -115,7 +115,7 @@ function pagetype_type_form_submit(array $form, array &$state) : void {
   cache_clear_all();
 
   drupal_set_message(
-        t('The page-type: @type has been saved.', ['@type' => $type->machine_name])
+        t('The page-type: @type has been saved.', ['@type' => $type->machineName])
     );
 
   $state['redirect'] = 'admin/structure/page-types';
@@ -135,7 +135,7 @@ function pagetype_type_form_delete_submit(array $form, array &$state) : void {
   $bundle = $state[Page::ENTITY_NAME . '_bundle'];
 
   $state['redirect'] = [
-    "admin/structure/page-types/manage/{$bundle->machine_name}/delete",
+    "admin/structure/page-types/manage/{$bundle->machineName}/delete",
         [
           'query' => $destination,
         ],

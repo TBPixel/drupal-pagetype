@@ -2,11 +2,11 @@
 
 /**
  * @file
+ * Defines the forms for the pagetype entity type.
  */
 
 use TBPixel\PageType\Page;
 use TBPixel\PageType\Bundle;
-
 
 /**
  * Returns a pagetype form given the type.

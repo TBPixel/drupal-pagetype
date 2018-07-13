@@ -2,12 +2,12 @@
 
 /**
  * @file
+ * Defines the custom entity type and associated loaders / callbacks.
  */
 
 use TBPixel\PageType\Page;
 use TBPixel\PageType\Bundle;
 use TBPixel\PageType\Exceptions\MissingBundle;
-
 
 /**
  * Hook_entity_info()
@@ -44,7 +44,7 @@ function pagetype_entity_info() : array {
 
   /** @var \TBPixel\PageType\Bundle $type */
   foreach (Bundle::build() as $type) {
-    $types[Page::ENTITY_NAME]['bundles'][$type->machine_name] = [
+    $types[Page::ENTITY_NAME]['bundles'][$type->machineName] = [
       'label' => $type->name,
       'admin' => [
         'path'              => 'admin/structure/page-types/manage/%pagetype_type',
@@ -122,6 +122,13 @@ function pagetype_uri(Page $page) : array {
 }
 
 /**
+ * Dynamically returns a page title.
+ */
+function pagetype_page_title(Page $page) : string {
+  return $page->title;
+}
+
+/**
  * Generates a page view.
  */
 function pagetype_page_view($page, string $view_mode = 'full') : array {
@@ -134,7 +141,6 @@ function pagetype_page_view($page, string $view_mode = 'full') : array {
 
   $page->content = [];
 
-  drupal_set_title($page->title);
   field_attach_prepare_view(Page::ENTITY_NAME, [$page->id => $page], $view_mode);
   entity_prepare_view(Page::ENTITY_NAME, [$page->id => $page]);
 
@@ -148,32 +154,6 @@ function pagetype_page_view($page, string $view_mode = 'full') : array {
   ];
 
   return $page->content;
-}
-
-/**
- * Generates a page preview.
- */
-function pagetype_page_preview(int $id) : string {
-  $page = Page::findOne($id);
-
-  drupal_set_title($page->title);
-
-  $build['title'] = [
-    '#type' => 'markup',
-    '#markup' => check_plain($page->title),
-    '#prefix' => '<h1 class="page__title">',
-    '#suffix' => '</h1>',
-  ];
-
-  $fields = array_keys(
-        field_info_instances(Page::ENTITY_NAME, $page->type)
-    );
-
-  foreach ($fields as $field) {
-    $build[$field] = field_view_field(Page::ENTITY_NAME, $page, $field);
-  }
-
-  return drupal_render($build);
 }
 
 /**
@@ -194,11 +174,11 @@ function pagetype_load_multiple(array $ids) : array {
  * Page type load callback.
  */
 function pagetype_type_load(string $uri) : string {
-  $machine_name = str_replace('-', '_', $uri);
+  $machineName = str_replace('-', '_', $uri);
 
-  if (is_null($bundle = Bundle::find($machine_name))) {
-    throw new MissingBundle(Page::ENTITY_NAME, $machine_name);
+  if (is_null($bundle = Bundle::find($machineName))) {
+    throw new MissingBundle(Page::ENTITY_NAME, $machineName);
   }
 
-  return $bundle->machine_name;
+  return $bundle->machineName;
 }

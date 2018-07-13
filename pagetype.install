@@ -2,13 +2,12 @@
 
 /**
  * @file
+ * Defines install instructions for the pagetype module.
  */
 
 require_once 'vendor/autoload.php';
 
-
 use TBPixel\PageType\Page;
-
 
 /**
  * Hook_schema()

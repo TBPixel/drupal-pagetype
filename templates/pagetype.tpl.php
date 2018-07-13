@@ -9,7 +9,7 @@
 ?>
 
 <section class="<?php print $classes; ?>">
-    <h1 class="page__title"><?php print $page->title; ?></h1>
+    <h1 class="page__title"><?php print check_plain($page->title); ?></h1>
 
     <?php print render($content['page_body']); ?>
 </div>

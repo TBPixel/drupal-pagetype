@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Defines the built-in types supported by the pagetype module.
  */
 
 /**

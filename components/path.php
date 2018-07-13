@@ -2,17 +2,16 @@
 
 /**
  * @file
+ * Defines integration with the drupal core path module.
  */
 
 use TBPixel\PageType\Page;
-
 
 /**
  * Callback to attach path field to page entity.
  */
 function pagetype_path_attach_field(array &$form, array &$state) : void {
   // Support path module.
-  $path = [];
   $page = $state[Page::ENTITY_NAME];
 
   $path_defaults = [

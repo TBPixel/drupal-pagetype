@@ -2,10 +2,10 @@
 
 /**
  * @file
+ * Integrates with the Drupal core Token module.
  */
 
 use TBPixel\PageType\Page;
-
 
 /**
  * Hook_token_info()
