@@ -1,5 +1,9 @@
 <?php
-    // In a real module variables should be manipulated in a preprocess function.
+
+    /**
+     * @file
+     * In a real module variables should be manipulated in a preprocess function.
+     */
     $content = $element->content;
     $page    = $content['#element'];
 ?>

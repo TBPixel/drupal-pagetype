@@ -1,56 +1,60 @@
 <?php
 
 /**
- * Composer PSR-4 Autoloader
+ * @file
+ */
+
+/**
+ * Composer PSR-4 Autoloader.
  */
 require_once 'vendor/autoload.php';
 
 /**
- * Help and Resources
+ * Help and Resources.
  */
 require_once 'components/help.php';
 
 /**
- * Form structure and validation
+ * Form structure and validation.
  */
 require_once 'forms/forms.php';
 
 /**
- * Permissions
+ * Permissions.
  */
 require_once 'components/permissions.php';
 
 /**
- * Entity Info
+ * Entity Info.
  */
 require_once 'components/entity.php';
 
 /**
- * Theme definitions
+ * Theme definitions.
  */
 require_once 'components/theme.php';
 
 /**
- * Routes and menu items
+ * Routes and menu items.
  */
 require_once 'components/routes.php';
 
 /**
- * Page type definitions
+ * Page type definitions.
  */
 require_once 'components/types.php';
 
 /**
- * Token definitions and info
+ * Token definitions and info.
  */
 require_once 'components/tokens.php';
 
 /**
- * Path hooks and alteration callbacks
+ * Path hooks and alteration callbacks.
  */
 require_once 'components/path.php';
 
 /**
- * Pathauto optional hook implementation
+ * Pathauto optional hook implementation.
  */
 require_once 'components/pathauto.php';

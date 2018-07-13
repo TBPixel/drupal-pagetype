@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @file
+ */
+
 require_once 'vendor/autoload.php';
 
 
@@ -7,165 +11,154 @@ use TBPixel\PageType\Page;
 
 
 /**
- * hook_schema()
+ * Hook_schema()
  */
-function pagetype_schema() : array
-{
-    $schema['pages'] = [
+function pagetype_schema() : array {
+  $schema['pages'] = [
 
-        'description' => 'Base table for the page entity.',
+    'description' => 'Base table for the page entity.',
 
-        'primary key' => ['id'],
+    'primary key' => ['id'],
 
-        'indexes'     => [
-            'page_created' => ['created']
-        ],
+    'indexes'     => [
+      'page_created' => ['created'],
+    ],
 
-        'fields' => [
+    'fields' => [
 
-            'id' => [
-                'description'   => 'Primary key for page entity.',
-                'type'          => 'serial',
-                'unsigned'      => true,
-                'not null'      => true
-            ],
+      'id' => [
+        'description'   => 'Primary key for page entity.',
+        'type'          => 'serial',
+        'unsigned'      => TRUE,
+        'not null'      => TRUE,
+      ],
 
-            'type' => [
-                'description'   => 'Bundle of the page entity.',
-                'type'          => 'varchar',
-                'length'        => 32,
-                'not null'      => true
-            ],
+      'type' => [
+        'description'   => 'Bundle of the page entity.',
+        'type'          => 'varchar',
+        'length'        => 32,
+        'not null'      => TRUE,
+      ],
 
-            'title' => [
-                'description'   => 'Page title.',
-                'type'          => 'varchar',
-                'length'        => 255,
-                'not null'      => true,
-                'default'       => ''
-            ],
+      'title' => [
+        'description'   => 'Page title.',
+        'type'          => 'varchar',
+        'length'        => 255,
+        'not null'      => TRUE,
+        'default'       => '',
+      ],
 
-            'created' => [
-                'description'   => 'Page created at date.',
-                'type'          => 'int',
-                'length'        => 11,
-                'not null'      => true
-            ],
+      'created' => [
+        'description'   => 'Page created at date.',
+        'type'          => 'int',
+        'length'        => 11,
+        'not null'      => TRUE,
+      ],
 
-            'status' => [
-                'description'   => 'Page visibility status.',
-                'type'          => 'varchar',
-                'length'        => 32,
-                'not null'      => true,
-                'default'       => 'unpublished'
-            ]
-        ]
-    ];
+      'status' => [
+        'description'   => 'Page visibility status.',
+        'type'          => 'varchar',
+        'length'        => 32,
+        'not null'      => TRUE,
+        'default'       => 'unpublished',
+      ],
+    ],
+  ];
 
-    $schema['page_types'] = [
+  $schema['page_types'] = [
 
-        'description' => 'Base table for page entity types.',
+    'description' => 'Base table for page entity types.',
 
-        'primary key' => ['machine_name'],
+    'primary key' => ['machine_name'],
 
-        'fields' => [
+    'fields' => [
 
-            'machine_name' => [
-                'description'   => 'Unique machine-readable name of the page type.',
-                'type'          => 'varchar',
-                'length'        => 32,
-                'not null'      => true
-            ],
+      'machine_name' => [
+        'description'   => 'Unique machine-readable name of the page type.',
+        'type'          => 'varchar',
+        'length'        => 32,
+        'not null'      => TRUE,
+      ],
 
-            'name' => [
-                'description'   => 'Human-readable name of the page type.',
-                'type'          => 'varchar',
-                'length'        => 255,
-                'not null'      => true,
-                'default'       => ''
-            ],
+      'name' => [
+        'description'   => 'Human-readable name of the page type.',
+        'type'          => 'varchar',
+        'length'        => 255,
+        'not null'      => TRUE,
+        'default'       => '',
+      ],
 
-            'plural' => [
-                'description'   => 'Human-readable plural name of the page type.',
-                'type'          => 'varchar',
-                'length'        => 255,
-                'not null'      => true,
-                'default'       => ''
-            ],
+      'plural' => [
+        'description'   => 'Human-readable plural name of the page type.',
+        'type'          => 'varchar',
+        'length'        => 255,
+        'not null'      => TRUE,
+        'default'       => '',
+      ],
 
-            'description' => [
-                'description'   => 'Brief description of the page type.',
-                'type'          => 'text',
-                'size'          => 'medium',
-                'not null'      => false
-            ],
+      'description' => [
+        'description'   => 'Brief description of the page type.',
+        'type'          => 'text',
+        'size'          => 'medium',
+        'not null'      => FALSE,
+      ],
 
-            'has_continuity' => [
-                'description'   => 'Page type continuity.',
-                'type'          => 'int',
-                'size'          => 'tiny',
-                'unsigned'      => true,
-                'not null'      => true,
-                'default'       => 0
-            ],
-        ]
-    ];
+      'has_continuity' => [
+        'description'   => 'Page type continuity.',
+        'type'          => 'int',
+        'size'          => 'tiny',
+        'unsigned'      => TRUE,
+        'not null'      => TRUE,
+        'default'       => 0,
+      ],
+    ],
+  ];
 
-
-    return $schema;
+  return $schema;
 }
 
-
 /**
- * hook_install()
+ * Hook_install()
  */
-function pagetype_install() : void
-{
-    if (!field_info_field('page_body'))
-    {
-        field_create_field([
-            'field_name'    => 'page_body',
-            'type'          => 'text_with_summary',
-            'module'        => 'text',
-            'cardinality'   => 1,
-            'entity_types'  => [Page::ENTITY_NAME],
-            'translatable'  => TRUE
-        ]);
-    }
+function pagetype_install() : void {
+  if (!field_info_field('page_body')) {
+    field_create_field([
+      'field_name'    => 'page_body',
+      'type'          => 'text_with_summary',
+      'module'        => 'text',
+      'cardinality'   => 1,
+      'entity_types'  => [Page::ENTITY_NAME],
+      'translatable'  => TRUE,
+    ]);
+  }
 
-    $instance = pagetype_get_body_instance('basic');
-    if (!field_info_instance($instance['entity_type'], $instance['field_name'], $instance['bundle']))
-    {
-        field_create_instance($instance);
-    }
+  $instance = pagetype_get_body_instance('basic');
+  if (!field_info_instance($instance['entity_type'], $instance['field_name'], $instance['bundle'])) {
+    field_create_instance($instance);
+  }
 }
 
-
 /**
- * hook_uninstall()
+ * Hook_uninstall()
  */
-function pagetype_uninstall() : void
-{
-    $instance = pagetype_get_body_instance('basic');
+function pagetype_uninstall() : void {
+  $instance = pagetype_get_body_instance('basic');
 
-    field_delete_field($instance['field_name']);
+  field_delete_field($instance['field_name']);
 }
 
-
-
 /**
- * Returns the body instance for a given pagetype
+ * Returns the body instance for a given pagetype.
  */
-function pagetype_get_body_instance(string $type) : array
-{
-    return [
-            'field_name'    => 'page_body',
-            'entity_type'   => Page::ENTITY_NAME,
-            'bundle'        => $type,
-            'label'         => 'Body',
-            'widget' => [
-                'type'   => 'text_textarea_with_summary',
-                'weight' => 1
-            ]
-    ];
+function pagetype_get_body_instance(string $type) : array {
+  return [
+    'field_name'    => 'page_body',
+    'entity_type'   => Page::ENTITY_NAME,
+    'bundle'        => $type,
+    'label'         => 'Body',
+    'widget' => [
+      'type'   => 'text_textarea_with_summary',
+      'weight' => 1,
+    ],
+  ];
 }
