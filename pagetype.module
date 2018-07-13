@@ -6,6 +6,11 @@
 require_once 'vendor/autoload.php';
 
 /**
+ * Help and Resources
+ */
+require_once 'components/help.php';
+
+/**
  * Form structure and validation
  */
 require_once 'forms/forms.php';
