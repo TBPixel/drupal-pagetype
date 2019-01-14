@@ -6,11 +6,6 @@
  */
 
 /**
- * Composer PSR-4 Autoloader.
- */
-require_once 'vendor/autoload.php';
-
-/**
  * Form structure and validation.
  */
 require_once 'forms/forms.php';

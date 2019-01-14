@@ -23,7 +23,7 @@ Pagetype requires or integrates with the following modules:
 
 ## INSTALLATION
 
- - `cd` into the pagetype module directory and run `composer dump-autoload -o`.
+ - Download the pagetype module to your modules directory and add the `tbpixel/pagetype` module as a [repository](https://getcomposer.org/doc/05-repositories.md#path) in your composer.json file.
  - Install as you would normally install a contributed Drupal module. Visit:
    [Installing modules](https://drupal.org/documentation/install/modules-themes/modules-7)
    for further information.
