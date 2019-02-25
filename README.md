@@ -1,5 +1,7 @@
 ## INTRODUCTION
 
+NOTE: This project is no-longer supported.
+
 The `pagetype` module provides a "node like" page entity type. This entity type is fieldable, and bundles can be managed via the `Structure->Page Types` admin menu.
 
 The page entity works much the same as the node entity, in that pages are given a default visible path (pages/{page-id} by default) and can be fully customized with their own set of fields. The core different between Nodes and Pages is that Pages, by default, have *no continuity*.
